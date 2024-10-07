@@ -2,6 +2,7 @@ plugins {
     kotlin("jvm") version "2.0.10"
     kotlin("plugin.serialization") version "2.0.20"
     application
+    `maven-publish`
 }
 
 group = "com.joeyennaco"
@@ -21,6 +22,18 @@ application {
     mainClass = "com.joeyennaco.MainKt"
 }
 
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "$group"
+            artifactId = "cons3rtkt"
+            version = version
+
+            from(components["java"])
+        }
+    }
+}
+
 tasks.jar {
     manifest {
         attributes["Main-Class"] = "com.joeyennaco.MainKt"
@@ -34,6 +47,7 @@ tasks.jar {
 tasks.test {
     useJUnitPlatform()
 }
+
 kotlin {
     jvmToolchain(17)
 }
