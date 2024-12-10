@@ -49,7 +49,7 @@ data class HostProps(
     val hostname: String,
     val gpuEnabled: Boolean,
     val id: Int,
-    val instanceTypeName: String,
+    val instanceTypeName: String = "",
     val master: Boolean,
     val osFamily: String,
     val networkInterfaceMap: Map<String, NetworkInterfaceProps>,

@@ -66,7 +66,7 @@ class Net : CliktCommand() {
 
         // If --list was specified, print the list of custom props and exit
         if (listArg) {
-            printAllNetworkNamesAndIps(dep)
+            echo(dep.getAllHostNetworkStr())
             exitProcess(0)
         }
 
@@ -79,7 +79,7 @@ class Net : CliktCommand() {
             } else {
                 hostArg as String
             }
-            printNetwork(retrieveNetworkForHostAndName(dep, host, nameArg), host)
+            echo(dep.getHostNetworkStr(host, nameArg))
             exitProcess(0)
         }
 
@@ -88,76 +88,8 @@ class Net : CliktCommand() {
         exitProcess(0)
     }
 
-    private fun printAllNetworkNamesAndIps(dep: Deployment) {
-        for (scenarioRoleName in dep.scenarioRoleNames) {
-            val host = dep.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName] ?: continue
-            val netKeys = host.networkInterfaceMap.keys
-            for (netKey in netKeys) {
-                val net = host.networkInterfaceMap[netKey] ?: continue
-                printNetworkInfo(scenarioRoleName=scenarioRoleName,
-                    networkType = retrieveNetworkType(net.cons3rtConnection, net.primaryConnection),
-                    interfaceName = netKey,
-                    networkName = net.networkName,
-                    internalIp = net.internalIp,
-                    boundaryIp = net.boundaryIp)
-            }
-        }
-    }
-
-    private fun printIpForHostNetwork(dep: Deployment, scenarioRoleName: String, networkName: String,
-                                      external: Boolean = false) {
-        val net = retrieveNetworkForHostAndName(dep, scenarioRoleName, networkName)
-        if (external) {
-            echo(net.boundaryIp)
-        } else {
-            echo(net.internalIp)
-        }
-    }
-
     private fun printIpForNetworkName(dep: Deployment, networkName: String, external: Boolean = false) {
-        printIpForHostNetwork(dep, dep.cons3rtRoleName, networkName, external)
-    }
-
-    private fun printNetwork(net: NetworkInterfaceProps, scenarioRoleName: String) {
-        printNetworkInfo(
-            scenarioRoleName,
-            retrieveNetworkType(net.cons3rtConnection, net.primaryConnection),
-            net.interfaceName,
-            net.networkName,
-            net.internalIp,
-            net.boundaryIp
-        )
-    }
-
-    private fun printNetworkInfo(scenarioRoleName: String, networkType: String, interfaceName: String,
-                                 networkName: String, internalIp: String, boundaryIp: String) {
-        val del = ","
-        echo(scenarioRoleName + del + networkType + del + interfaceName + del + networkName + del +
-                internalIp + del + boundaryIp)
-    }
-
-    private fun retrieveNetworkForHostAndName(dep: Deployment, scenarioRoleName: String, networkName: String):
-            NetworkInterfaceProps {
-        if (scenarioRoleName !in dep.deploymentRunProps.deploymentRun.hostMap) {
-            throw IllegalStateException("Scenario role name not found in run props: $scenarioRoleName")
-        }
-        val host = dep.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName]
-            ?: throw IllegalStateException("Scenario role name not found in run props: $scenarioRoleName")
-        for (netKey in host.networkInterfaceMap.keys) {
-            val net = host.networkInterfaceMap[netKey] ?: continue
-            if (net.networkName == networkName) {
-                return net
-            }
-        }
-        throw IllegalStateException("Network name not found in run props for host [$scenarioRoleName]: $networkName")
-    }
-
-    private fun retrieveNetworkType(isCons3rt: Boolean, isPrimary: Boolean): String {
-        return when {
-            isCons3rt -> "cons3rt"
-            isPrimary -> "primary"
-            else -> "additional"
-        }
+        echo(dep.getIpForHostNetwork(dep.cons3rtRoleName, networkName, external))
     }
 }
 

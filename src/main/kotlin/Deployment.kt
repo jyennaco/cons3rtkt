@@ -79,7 +79,7 @@ class Deployment(val installScriptDir: String = "") {
     /*
      * Gets value of the ASSET_DIR environment variable or attempts to determine where it is
      */
-    fun determineAssetDir() : String {
+    private fun determineAssetDir() : String {
         // Use the value of ASSET_DIR environment variable
         val assetDirVar = getEnvVar("ASSET_DIR")
 
@@ -120,7 +120,7 @@ class Deployment(val installScriptDir: String = "") {
      *
      * @return OperatingSystemType
      */
-    fun determineCons3rtAgentDirForOs(operatingSystemType: OperatingSystemType): String? {
+    private fun determineCons3rtAgentDirForOs(operatingSystemType: OperatingSystemType): String? {
         return when (operatingSystemType) {
             OperatingSystemType.FREEBSD -> cons3rtAgentDirLinux
             OperatingSystemType.LINUX -> cons3rtAgentDirLinux
@@ -130,7 +130,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentHome(): String {
+    private fun determineDeploymentHome(): String {
 
         // Use the value of DEPLOYMENT_HOME environment variable
         val deploymentHomeVar = getEnvVar("DEPLOYMENT_HOME")
@@ -177,7 +177,7 @@ class Deployment(val installScriptDir: String = "") {
         // Find the directory starting with "Deployment"
         for (runDirFile in runDirFiles) {
             val dirName = runDirFile.absolutePath.substringAfterLast(File.separator)
-            println("runDirFile: $dirName")
+            //println("runDirFile: $dirName")
             if (dirName.startsWith("Deployment")) {
                 if (!(runDirFile.exists()) || !(runDirFile.isDirectory)) {
                     //println("INFO: Deployment directory is not a directory: $runDirFile")
@@ -192,22 +192,22 @@ class Deployment(val installScriptDir: String = "") {
         throw IllegalStateException("Unable to determine deployment home from run directory: [$runDir]")
     }
 
-    fun determineDeploymentId(): Int {
+    private fun determineDeploymentId(): Int {
         return this.deploymentRunProps.deploymentRun.deployment.id
     }
 
-    fun determineDeploymentName(): String {
+    private fun determineDeploymentName(): String {
         return this.deploymentRunProps.deploymentRun.deployment.name
     }
 
-    fun determineDeploymentProperties(): Properties {
+    private fun determineDeploymentProperties(): Properties {
         val props = Properties()
         val fis = FileInputStream(this.deploymentPropsFile)
         props.load(fis)
         return props
     }
 
-    fun determineDeploymentPropsFile(): String {
+    private fun determineDeploymentPropsFile(): String {
         val depProps = File(this.deploymentHome, "deployment.properties")
         return if (depProps.exists()) {
             depProps.absolutePath
@@ -216,7 +216,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentPropsPs1(): String {
+    private fun determineDeploymentPropsPs1(): String {
         val depProps = File(this.deploymentHome, "deployment-properties.ps1")
         return if (depProps.exists()) {
             depProps.absolutePath
@@ -225,7 +225,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentPropsSh(): String {
+    private fun determineDeploymentPropsSh(): String {
         val depProps = File(this.deploymentHome, "deployment-properties.sh")
         return if (depProps.exists()) {
             depProps.absolutePath
@@ -234,7 +234,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentRunHome(): String {
+    private fun determineDeploymentRunHome(): String {
 
         // Use the value of DEPLOYMENT_HOME environment variable
         val deploymentRunHomeVar = getEnvVar("DEPLOYMENT_RUN_HOME")
@@ -298,15 +298,15 @@ class Deployment(val installScriptDir: String = "") {
         throw IllegalStateException("Unable to determine deployment run home from run directory: [$runDir]")
     }
 
-    fun determineDeploymentRunId(): Int {
+    private fun determineDeploymentRunId(): Int {
         return this.deploymentRunProps.deploymentRun.id
     }
 
-    fun determineDeploymentRunName(): String {
+    private fun determineDeploymentRunName(): String {
         return this.deploymentRunProps.deploymentRun.options.name
     }
 
-    fun determineDeploymentRunPropsFile(): String {
+    private fun determineDeploymentRunPropsFile(): String {
         val depRunProps = File(this.deploymentRunHome, "deployment.properties")
         return if (depRunProps.exists()) {
             depRunProps.absolutePath
@@ -315,7 +315,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentRunPropsJson(): String {
+    private fun determineDeploymentRunPropsJson(): String {
         val depRunProps = File(this.deploymentRunHome, "deploymentRunProperties.json")
         return if (depRunProps.exists()) {
             depRunProps.absolutePath
@@ -324,7 +324,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentRunPropsPs1(): String {
+    private fun determineDeploymentRunPropsPs1(): String {
         val depRunProps = File(this.deploymentRunHome, "deployment-properties.ps1")
         return if (depRunProps.exists()) {
             depRunProps.absolutePath
@@ -333,7 +333,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentRunPropsSh(): String {
+    private fun determineDeploymentRunPropsSh(): String {
         val depRunProps = File(this.deploymentRunHome, "deployment-properties.sh")
         return if (depRunProps.exists()) {
             depRunProps.absolutePath
@@ -342,7 +342,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineDeploymentRunPropsYaml(): String {
+    private fun determineDeploymentRunPropsYaml(): String {
         val depRunProps = File(this.deploymentRunHome, "deploymentRunProperties.yml")
         return if (depRunProps.exists()) {
             depRunProps.absolutePath
@@ -356,7 +356,7 @@ class Deployment(val installScriptDir: String = "") {
      *
      * @return OperatingSystemType
      */
-    fun determineOperatingSystem(): OperatingSystemType {
+    private fun determineOperatingSystem(): OperatingSystemType {
         val osName = System.getProperty("os.name").lowercase()
         return when {
             osName.contains("win") -> OperatingSystemType.WIN
@@ -368,7 +368,7 @@ class Deployment(val installScriptDir: String = "") {
         }
     }
 
-    fun determineScenarioMasterRoleName(): String {
+    private fun determineScenarioMasterRoleName(): String {
         for (scenarioRoleName in this.deploymentRunProps.deploymentRun.hostMap.keys) {
             if (this.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName]?.master == true) {
                 return scenarioRoleName
@@ -377,7 +377,7 @@ class Deployment(val installScriptDir: String = "") {
         return ""
     }
 
-    fun determineScenarioRoleNames(): List<String> {
+    private fun determineScenarioRoleNames(): List<String> {
         val scenarioRoleNames = mutableListOf<String>()
         for (scenarioRoleName in this.deploymentRunProps.deploymentRun.hostMap.keys) {
             scenarioRoleNames.add(scenarioRoleName)
@@ -385,7 +385,7 @@ class Deployment(val installScriptDir: String = "") {
         return scenarioRoleNames
     }
 
-    fun determineVirtualizationRealmType(): VirtualizationRealmType {
+    private fun determineVirtualizationRealmType(): VirtualizationRealmType {
         val vrType = this.deploymentRunProps.deploymentRun.virtRealm.type
         return when (vrType) {
             "Amazon" -> VirtualizationRealmType.AMAZON
@@ -401,6 +401,33 @@ class Deployment(val installScriptDir: String = "") {
     fun getEnvVar(varName: String) : String {
         val envVarValue: String? = System.getenv(varName)
         return envVarValue ?: ""
+    }
+
+    /*
+     * Returns the IP given the scenario role name and network name
+     */
+    fun getIpForHostNetwork(scenarioRoleName: String, networkName: String, external: Boolean = false) : String {
+        val net = retrieveNetworkForHostAndName(scenarioRoleName, networkName)
+        return if (external) {
+            net.boundaryIp
+        } else {
+            net.internalIp
+        }
+    }
+
+    /*
+     * Returns the primary IP address for the provided scenario role name
+     */
+    fun getHostPrimaryIp(scenarioRoleName: String) : String {
+        val host = this.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName] ?: return ""
+        val netKeys = host.networkInterfaceMap.keys
+        for (netKey in netKeys) {
+            val net = host.networkInterfaceMap[netKey] ?: continue
+            if (net.primaryConnection) {
+                return net.internalIp
+            }
+        }
+        return ""
     }
 
     /*
@@ -424,13 +451,44 @@ class Deployment(val installScriptDir: String = "") {
         return propNames
     }
 
-    fun readJsonProperties(): DeploymentRunProps {
+    fun getAllHostNetworkStr() : String {
+        var allNetworkStr = ""
+        val del = ","
+        for (scenarioRoleName in this.scenarioRoleNames) {
+            val host = this.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName] ?: continue
+            val netKeys = host.networkInterfaceMap.keys
+            for (netKey in netKeys) {
+                val net = host.networkInterfaceMap[netKey] ?: continue
+                allNetworkStr += scenarioRoleName + del +
+                        retrieveNetworkType(net.cons3rtConnection, net.primaryConnection) + del +
+                        net.interfaceName + del +
+                        net.networkName + del +
+                        net.internalIp + del +
+                        net.boundaryIp + "\n"
+            }
+        }
+        return if (allNetworkStr.isNotEmpty()) allNetworkStr.substring(0, allNetworkStr.length - 1) else ""
+    }
+
+    fun getHostNetworkStr(scenarioRoleName: String, networkName: String) : String {
+        val net = retrieveNetworkForHostAndName(scenarioRoleName, networkName)
+        val del = ","
+        return scenarioRoleName + del +
+                retrieveNetworkType(net.cons3rtConnection, net.primaryConnection) + del +
+                net.interfaceName + del +
+                networkName + del +
+                net.internalIp + del +
+                net.boundaryIp
+    }
+
+    private fun readJsonProperties(): DeploymentRunProps {
         //println("INFO: Reading JSON deployment run props file: ${this.deploymentRunPropsFileJson}")
 
         val jsonPropsFile = File(this.deploymentRunPropsFileJson)
 
         if (!jsonPropsFile.exists()) {
-            println("WARNING: JSON deployment run props file not found: ${jsonPropsFile.absolutePath}")
+            println("ERROR: JSON deployment run props file not found: ${jsonPropsFile.absolutePath}")
+            throw IllegalStateException("JSON deployment run props file not found: ${jsonPropsFile.absolutePath}")
         }
 
         // Read the JSON properties file
@@ -457,5 +515,29 @@ class Deployment(val installScriptDir: String = "") {
     fun retrieveDeploymentPropValue(propName: String): String {
         val propVal = this.deploymentProps.getProperty(propName)
         return propVal ?: ""
+    }
+
+    fun retrieveNetworkForHostAndName(scenarioRoleName: String, networkName: String):
+            NetworkInterfaceProps {
+        if (scenarioRoleName !in this.deploymentRunProps.deploymentRun.hostMap) {
+            throw IllegalStateException("Scenario role name not found in run props: $scenarioRoleName")
+        }
+        val host = this.deploymentRunProps.deploymentRun.hostMap[scenarioRoleName]
+            ?: throw IllegalStateException("Scenario role name not found in run props: $scenarioRoleName")
+        for (netKey in host.networkInterfaceMap.keys) {
+            val net = host.networkInterfaceMap[netKey] ?: continue
+            if (net.networkName == networkName) {
+                return net
+            }
+        }
+        throw IllegalStateException("Network name not found in run props for host [$scenarioRoleName]: $networkName")
+    }
+
+    fun retrieveNetworkType(isCons3rt: Boolean, isPrimary: Boolean): String {
+        return when {
+            isCons3rt -> "cons3rt"
+            isPrimary -> "primary"
+            else -> "additional"
+        }
     }
 }
