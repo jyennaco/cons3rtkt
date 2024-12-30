@@ -433,7 +433,7 @@ class Deployment(val installScriptDir: String = "") {
     /*
      * Given a property name, return the value as a String or a blank string
      */
-    fun getCustomPropValue(propName: String) : String? {
+    fun getCustomDeploymentPropValue(propName: String) : String? {
         // Print a specific custom deployment property
         if (propName in this.deploymentRunProps.deploymentRun.deployment.props.keys) {
             val propVal = this.deploymentRunProps.deploymentRun.deployment.props[propName]
@@ -443,12 +443,50 @@ class Deployment(val installScriptDir: String = "") {
         return null
     }
 
-    fun listCustomPropNames(): List<String> {
+    fun listCustomDeploymentPropNames(): List<String> {
         val propNames = mutableListOf<String>()
         for (propName in this.deploymentRunProps.deploymentRun.deployment.props.keys) {
             propNames.add(propName)
         }
         return propNames
+    }
+
+    /*
+     * Given a run property name, return the value as a String or a blank string
+     */
+    fun getCustomRunPropValue(propName: String) : String? {
+        // Print a specific custom deployment property
+        if (propName in this.deploymentRunProps.deploymentRun.options.properties.keys) {
+            val propVal = this.deploymentRunProps.deploymentRun.options.properties[propName]
+            //println("$propName: $propVal")
+            return propVal
+        }
+        return null
+    }
+
+    /*
+     * List run property names
+     */
+    fun listCustomRunPropNames(): List<String> {
+        val propNames = mutableListOf<String>()
+        for (propName in this.deploymentRunProps.deploymentRun.options.properties.keys) {
+            propNames.add(propName)
+        }
+        return propNames
+    }
+
+    /*
+     * Given a run property name, return the value as a String or a blank string
+     */
+    fun getCustomPropValue(propName: String) : String? {
+        return getCustomRunPropValue(propName)
+    }
+
+    /*
+     * List run property names
+     */
+    fun listCustomPropNames(): List<String> {
+        return listCustomRunPropNames()
     }
 
     fun getAllHostNetworkStr() : String {
