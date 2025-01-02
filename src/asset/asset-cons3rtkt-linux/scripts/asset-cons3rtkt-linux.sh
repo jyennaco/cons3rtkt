@@ -125,6 +125,39 @@ function set_asset_dir() {
     mediaDir="${ASSET_DIR}/media"
 }
 
+function set_permissions() {
+    # Ensure the cons3rt-created user can access deployment properties
+    logInfo "Setting permissions on cons3rt-agent directories to allow [${CONS3RT_CREATED_USER}] to access properties..."
+
+    # Chmod /opt/cons3rt-agent/run to 755
+    logInfo "Setting mode for /opt/cons3rt-agent/run to 755..."
+    chmod 755 /opt/cons3rt-agent/run >> ${logFile} 2>&1
+    if [ $? -ne 0 ]; then logErr "Setting mode for /opt/cons3rt-agent/run to 755"; return 1; fi
+
+    # Set mode of all subdirectories of /opt/cons3rt-agent/run to 755
+    logInfo "Setting mode of all subdirectories of /opt/cons3rt-agent/run to 755..."
+    find /opt/cons3rt-agent/run -type d -print0 | xargs -0 chmod 0755 >> ${logFile} 2>&1
+    if [ $? -ne 0 ]; then logErr "Setting mode of all subdirectories of /opt/cons3rt-agent/run to 755"; return 1; fi
+
+    # Add the cons3rt-created user to the root group
+    logInfo "Adding the cons3rt-created user [${CONS3RT_CREATED_USER}] to the root group..."
+    usermod -a -G root ${CONS3RT_CREATED_USER} >> ${logFile} 2>&1
+    if [ $? -ne 0 ]; then logErr "Adding the cons3rt-created user [${CONS3RT_CREATED_USER}] to the root group"; return 1; fi
+
+    # Set the deployment properties files modes to 644
+    logInfo "Setting mode for ${DEPLOYMENT_HOME}/deployment* to 644..."
+    chmod 644 ${DEPLOYMENT_HOME}/deployment* >> ${logFile} 2>&1
+    if [ $? -ne 0 ]; then logErr "Setting mode for ${DEPLOYMENT_HOME}/deployment* to 644"; return 1; fi
+
+    # Set the deployment run properties files modes to 644
+    logInfo "Setting mode for ${DEPLOYMENT_RUN_HOME}/deployment* to 644..."
+    chmod 644 ${DEPLOYMENT_RUN_HOME}/deployment* >> ${logFile} 2>&1
+    if [ $? -ne 0 ]; then logErr "Setting mode for ${DEPLOYMENT_RUN_HOME}/deployment* to 644"; return 1; fi
+
+    logInfo "Completed setting permissions on cons3rt-agent directories to allow [${CONS3RT_CREATED_USER}] to access properties"
+    return 0
+}
+
 
 function main() {
     logInfo "Running: ${logTag}"
@@ -134,6 +167,8 @@ function main() {
     create_env_file
     add_env
     if [ $? -ne 0 ]; then logErr "Problem configuring the environment"; return 2; fi
+    set_permissions
+    if [ $? -ne 0 ]; then logErr "Problem setting permissions"; return 3; fi
     logInfo "Successfully completed: ${logTag}"
     return 0
 }
