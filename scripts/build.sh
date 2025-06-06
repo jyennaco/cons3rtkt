@@ -7,7 +7,7 @@
 # Prerequisites: gradle, java
 #
 # Usage:
-#     ./scripts/buildAssets.sh
+#     ./scripts/build.sh
 #
 
 # Ensure this is executing from the top level directory of the homer git repo

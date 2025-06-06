@@ -303,7 +303,7 @@ class Deployment(val installScriptDir: String = "") {
     }
 
     private fun determineDeploymentRunName(): String {
-        return this.deploymentRunProps.deploymentRun.options.name
+        return this.deploymentRunProps.deploymentRun.name
     }
 
     private fun determineDeploymentRunPropsFile(): String {

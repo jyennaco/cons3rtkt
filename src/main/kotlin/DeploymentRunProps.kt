@@ -15,6 +15,7 @@ data class DeploymentProps(
 data class RunProps(
     val deployment: DeploymentProps,
     val id: Int,
+    val name: String,
     val hostMap: Map<String, HostProps>,
     val options: OptionsProps,
     val project: ProjectProps,
@@ -79,7 +80,6 @@ data class NetworkInterfaceProps(
 
 @Serializable
 data class OptionsProps(
-    val name: String,
     val properties: Map<String, String>,
 )
 
